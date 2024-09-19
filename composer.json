@@ -17,6 +17,7 @@
         "symfony/asset-mapper": "7.1.*",
         "symfony/console": "7.1.*",
         "symfony/doctrine-messenger": "7.1.*",
+        "symfony/dom-crawler": "7.1.*",
         "symfony/dotenv": "7.1.*",
         "symfony/expression-language": "7.1.*",
         "symfony/flex": "^2",
@@ -43,7 +44,8 @@
         "symfony/web-link": "7.1.*",
         "symfony/yaml": "7.1.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+      "ext-dom": "*"
     },
     "config": {
         "allow-plugins": {
@@ -103,6 +105,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "7.1.*",
+        "symfony/var-dumper": "7.1.*",
         "symfony/web-profiler-bundle": "7.1.*"
     }
 }

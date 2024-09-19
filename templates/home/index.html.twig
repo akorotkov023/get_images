@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <main>
+        <section class="text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-6 mx-auto">
+                    <h1 class="fw-light">Найдено изображений</h1>
+                    <p class="lead text-body-secondary">Количество: {{ count }}</p>
+                    <p class="lead text-body-secondary">Общий размер: {{ total }} Мб</p>
+                </div>
+            </div>
+        </section>
+
+        <table>
+            <tr>
+                {% for image in images %}
+                <td>
+                    <div class="image-container">
+                        <img src="{{ image.path }}" alt="">
+                    </div>
+                    <p>Размер файла: {{ image.size }} МБ</p>
+                </td>
+                {% if loop.index % 4 == 0 %}
+            </tr><tr>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        </table>
+    </main>
+
+{% endblock %}
