@@ -17,10 +17,12 @@
             <tr>
                 {% for image in images %}
                 <td>
-                    <div class="image-container">
-                        <img src="{{ image.path }}" alt="">
+                    <div>
+                        <div class="image-container">
+                            <img src="{{ image.path }}" alt="">
+                        </div>
+                        <p>Размер файла: {{ image.size }} МБ</p>
                     </div>
-                    <p>Размер файла: {{ image.size }} МБ</p>
                 </td>
                 {% if loop.index % 4 == 0 %}
             </tr><tr>

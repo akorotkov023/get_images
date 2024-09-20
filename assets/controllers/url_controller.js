@@ -18,14 +18,34 @@ export default class extends Controller {
     }
 
     async getData(el2, url) {
-        const response = await fetch('/url', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ url: url }) // Передаем параметр в теле запроса
-        });
-        this.element.innerHTML = await response.text();
+        if (this.isValidURL(url)){
+            const response = await fetch('/url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            });
+            this.element.innerHTML = await response.text();
+        } else {
+            const response = await fetch('/error', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            });
+            this.element.innerHTML = await response.text();
+        }
         el2.classList.remove('loader')
+    }
+
+    isValidURL(url) {
+        try {
+            new URL(url);
+            return true; // URL корректен
+        } catch (e) {
+            return false; // URL некорректен
+        }
     }
 }
