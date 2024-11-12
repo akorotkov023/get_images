@@ -5,13 +5,22 @@ namespace App\Controller;
 use App\Form\GetImageType;
 use DOMDocument;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Annotation\Route('/', name: 'app_home')]
+    #[Route('/test', name: 'app_test', methods: ['GET'])]
+    public function test(): Response
+    {
+        return new Response(
+            '<html><body><h1>Test url<h1></body></html>'
+        );
+    }
+
+    #[Route('/', name: 'app_home', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $form = $this->createForm(GetImageType::class, [
@@ -152,6 +161,9 @@ class HomeController extends AbstractController
         // Если URL относительный, создаем абсолютный URL
         return rtrim($baseUrl, '/') . '/' . ltrim($relativeUrl, '/');
     }
+
+
+    // For Tests
 
 }
 
