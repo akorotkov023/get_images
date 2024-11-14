@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Service\Redis\ConnectorFacade;
+use App\Service\Redis\ConnectorFacadeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,11 +14,17 @@ use Symfony\Component\Routing\Attribute\Route;
 class RedisController extends AbstractController
 {
     #[Route('/redis_check', name: 'app_redis_check')]
-    public function index(): Response
+    public function check(ConnectorFacadeInterface $connectorFacade): JsonResponse
     {
-        return $this->render('redis/index.html.twig', [
-            'controller_name' => 'RedisController',
-        ]);
+        $id = '1';
+//        $data = $connectorFacade->getCard($id);
+
+//        dd($data);
+        // Формируем данные для ответа
+
+        $res = [];
+
+        return new JsonResponse($res);
     }
 
     #[Route('/trending', name: 'app_trending')]

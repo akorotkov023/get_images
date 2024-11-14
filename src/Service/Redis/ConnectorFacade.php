@@ -3,8 +3,6 @@
 namespace App\Service\Redis;
 
 use Psr\Log\LoggerInterface;
-use Raketa\BackendTestTask\Service\Redis\Connector;
-use Raketa\BackendTestTask\Service\Redis\ConnectorException;
 
 class ConnectorFacade implements ConnectorFacadeInterface
 {
@@ -20,18 +18,15 @@ class ConnectorFacade implements ConnectorFacadeInterface
         $this->redisConnector = $redisConnector;
     }
 
-    public function getCard(): string
+    public function getCard(string $id): string
     {
         $this->redisConnector->getConnect();
-        $value = $this->redisConnector->getCard();
+        $value = $this->redisConnector->getValue($id);
         $this->logger->info('Значение = ' . $value);
 
         return $value;
     }
 
-    /**
-     * @throws ConnectorException
-     */
     public function setCard(): void
     {
         $this->redisConnector->getConnect();

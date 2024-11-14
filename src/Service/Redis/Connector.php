@@ -62,9 +62,7 @@ class Connector
     public function getValue(string $key): ?string
     {
         try{
-            $value = $this->client->get($key);
-            echo "Get value with key '$value'." . "<br>";
-            return $value;
+            return $this->client->get($key);
         } catch (ConnectionException $ex) {
             echo "ConnectionException: " . $ex->getMessage() . "<br>";
         }
