@@ -8,14 +8,16 @@
 /var/
 /migrations/
 /vendor/
+.idea/
+.idea/*
+.idea/*.xml
+.idea/php.xml
+.idea/workspace.xml
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
-.idea/
-.idea/*
-.idea/*.xml
 ###< phpunit/phpunit ###
 
 ###> symfony/phpunit-bridge ###

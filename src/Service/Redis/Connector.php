@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Service\Redis;
+use App\Entity\Article;
 use Predis\Client;
 use Predis\Connection\ConnectionException;
 
@@ -32,7 +33,7 @@ class Connector
     {
         try {
             if ($this->isConnected) {
-                echo "Соединение было установлено ранее с Redis." . "<br>";
+                echo "Соединение было установлено ранее с Redis." . PHP_EOL;
                 return;
             }
             $this->isConnected = true;
@@ -41,10 +42,10 @@ class Connector
                 'host' => $this->host, // Адрес Redis в Docker
                 'port' => $this->port, // Порт, на котором работает Redis
             ]);
-            $this->client->auth($this->password);
-            $this->client->select($this->dbIndex);
+//            $this->client->auth($this->password);
+//            $this->client->select($this->dbIndex);
             $this->client->connect();
-            echo "Successfully connected to Redis." . "<br>";
+            echo "Successfully connected to Redis." . PHP_EOL;
         } catch (ConnectionException $ex) {
             echo "Could not connect to Redis: " . $ex->getMessage() . "<br>";
         }
@@ -62,61 +63,22 @@ class Connector
     public function getValue(string $key): ?string
     {
         try{
-            $value = $this->client->get($key);
-            echo "Get value with key '$value'." . "<br>";
-            return $value;
+            return $this->client->get($key);
         } catch (ConnectionException $ex) {
-            echo "ConnectionException: " . $ex->getMessage() . "<br>";
-        }
-        return null;
-    }
-
-    public function getCard(string $key): ?string
-    {
-        try{
-            $value = $this->client->get($key);
-            echo "Get value with key '$value'." . "<br>";
-            return $value;
-        } catch (ConnectionException $ex) {
-            echo "ConnectionException: " . $ex->getMessage() . "<br>";
+            echo "ConnectionException: " . $ex->getMessage() . PHP_EOL;
         }
         return null;
     }
 
 
-    public function setCard(string $key, Cart $value): void
+    public function setCard(string $key, array $value): void
     {
         try {
-            // Преобразуем объект Cart в массив
-            $cartArray = [
-                'uuid' => $value->getUuid(),
-                'customer' => [
-                    'id' => $value->getCustomer()->getId(),
-                    'name' => implode(' ', [
-                        $value->getCustomer()->getLastName(),
-                        $value->getCustomer()->getFirstName(),
-                        $value->getCustomer()->getMiddleName(),
-                    ]),
-                    'email' => $value->getCustomer()->getEmail(),
-                ],
-                'payment_method' => $value->getPaymentMethod(),
-                'items' => array_map(function($item) {
-                    return [
-                        'uuid' => $item->getUuid(),
-                        'price' => $item->getPrice(),
-                        'quantity' => $item->getQuantity(),
-                        'product_uuid' => $item->getProductUuid(),
-                    ];
-                }, $value->getItems()),
-            ];
-
             // Преобразуем массив в JSON
-            $jsonData = json_encode($cartArray);
-
-            // Сохраняем JSON в Redis с истечением срока действия
-            $this->client->setex($key, 24 * 60 * 60, $jsonData);
-        } catch (RedisException $e) {
-            throw new ConnectorException('ConnectorFacade error', $e->getCode(), $e);
+            $jsonData = json_encode($value);
+            $this->client->setex($key, 20, $jsonData);
+        } catch (ConnectionException $e) {
+            echo $e->getMessage();
         }
     }
 
