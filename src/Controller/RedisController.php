@@ -16,15 +16,47 @@ class RedisController extends AbstractController
     #[Route('/redis_check', name: 'app_redis_check')]
     public function check(ConnectorFacadeInterface $connectorFacade): JsonResponse
     {
-        $id = '1';
-//        $data = $connectorFacade->getCard($id);
+        $id = '2';
+        $data = $connectorFacade->getCard($id);
 
-//        dd($data);
-        // Формируем данные для ответа
+        if (!isset($data)) {
+            dd(uniqid());
+            // Нет записи, добавляем
 
-        $res = [];
+            $connectorFacade->setCard($article);
+        }
 
-        return new JsonResponse($res);
+        return new JsonResponse($data);
+    }
+
+    #[Route('/article/{id}', name: 'app_article')]
+    public function show(string $id, EntityManagerInterface $entityManager, ConnectorFacadeInterface $connectorFacade): JsonResponse
+    {
+        // Получаем статью по ID
+        $data = $connectorFacade->getArticle($id);
+
+        if (!isset($data)) {
+            $article = $entityManager->getRepository(Article::class)->find($id);
+
+            // Проверяем, существует ли статья
+            if (!$article) {
+                return new JsonResponse(['error' => 'Article not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            $key = $article->getId();
+            $cartArray = [
+                'id' => $article->getId(),
+                'title' => $article->getTitle(),
+                'text' => $article->getText(),
+                'rating' => $article->getRating(),
+            ];
+
+            $connectorFacade->setArticle($key, $cartArray);
+            echo "Данные из базы." . PHP_EOL;
+            return new JsonResponse($cartArray);
+        }
+
+        return new JsonResponse($data);
     }
 
     #[Route('/trending', name: 'app_trending')]
@@ -46,28 +78,6 @@ class RedisController extends AbstractController
             'title' => $randomArticle->getTitle(),
             'text' => $randomArticle->getText(),
             'rating' => $randomArticle->getRating(),
-        ];
-
-        return new JsonResponse($data);
-    }
-
-    #[Route('/article/{id}', name: 'app_article')]
-    public function show(string $id, EntityManagerInterface $entityManager): JsonResponse
-    {
-        // Получаем статью по ID
-        $article = $entityManager->getRepository(Article::class)->find($id);
-
-        // Проверяем, существует ли статья
-        if (!$article) {
-            return new JsonResponse(['error' => 'Article not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        // Формируем данные для ответа
-        $data = [
-            'id' => $article->getId(),
-            'title' => $article->getTitle(),
-            'text' => $article->getText(),
-            'rating' => $article->getRating(),
         ];
 
         return new JsonResponse($data);
