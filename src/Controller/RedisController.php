@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Service\Redis\ConnectorFacade;
 use App\Service\Redis\ConnectorFacadeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,16 +15,10 @@ class RedisController extends AbstractController
     #[Route('/redis_check', name: 'app_redis_check')]
     public function check(ConnectorFacadeInterface $connectorFacade): JsonResponse
     {
-        $id = '2';
-        $data = $connectorFacade->getCard($id);
-
+        $data = $connectorFacade->getArticle('key1');
         if (!isset($data)) {
-            dd(uniqid());
-            // Нет записи, добавляем
-
-            $connectorFacade->setCard($article);
+            return new JsonResponse(['error' => 'Article not found'], Response::HTTP_NOT_FOUND);
         }
-
         return new JsonResponse($data);
     }
 
@@ -34,15 +27,12 @@ class RedisController extends AbstractController
     {
         // Получаем статью по ID
         $data = $connectorFacade->getArticle($id);
-
         if (!isset($data)) {
             $article = $entityManager->getRepository(Article::class)->find($id);
-
             // Проверяем, существует ли статья
             if (!$article) {
                 return new JsonResponse(['error' => 'Article not found'], Response::HTTP_NOT_FOUND);
             }
-
             $key = $article->getId();
             $cartArray = [
                 'id' => $article->getId(),
@@ -68,10 +58,8 @@ class RedisController extends AbstractController
         if (empty($articles)) {
             return new JsonResponse(['error' => 'No articles found'], Response::HTTP_NOT_FOUND);
         }
-
         // Выбираем случайную статью
         $randomArticle = $articles[array_rand($articles)];
-
         // Формируем данные для ответа
         $data = [
             'id' => $randomArticle->getId(),
@@ -79,7 +67,6 @@ class RedisController extends AbstractController
             'text' => $randomArticle->getText(),
             'rating' => $randomArticle->getRating(),
         ];
-
         return new JsonResponse($data);
     }
 }
