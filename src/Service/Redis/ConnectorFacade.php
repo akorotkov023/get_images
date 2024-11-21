@@ -22,7 +22,7 @@ class ConnectorFacade implements ConnectorFacadeInterface
     {
         $this->redisConnector->getConnect();
         $value = $this->redisConnector->getValue($id);
-        $this->logger->info('Значение = ' . $value . PHP_EOL);
+        $this->logger->info('Значение = ' . $value);
         if (!isset($value)) {
             return null;
         }
@@ -40,7 +40,7 @@ class ConnectorFacade implements ConnectorFacadeInterface
         $this->redisConnector->getConnect();
 
         $this->redisConnector->setCard($key, $value);
-        $this->logger->info('Запись добавлена ' . $key . PHP_EOL);
+        $this->logger->info('Запись добавлена ' . $key);
 
     }
 }

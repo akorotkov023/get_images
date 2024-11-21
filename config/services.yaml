@@ -22,3 +22,10 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Consumer\MessageConsumer:
+        class: App\Consumer\MessageConsumer
+        arguments:
+            $topic: !php/const App\Service\KafkaService::SEND_MESSAGE_TOPIC
+            $groupId: group1
+            $name: send_message
