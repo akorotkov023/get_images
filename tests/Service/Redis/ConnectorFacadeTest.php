@@ -20,10 +20,15 @@ class ConnectorFacadeTest extends TestCase
         $this->connectorFacade = new ConnectorFacade($this->logger, $this->redisConnector);
     }
 
-    public function testGetCardLogsValue()
+    public function testGetArticleReturnsData()
     {
         $id = '123';
-        $expectedValue = 'some value';
+        $expectedValue = json_encode([
+            'id' => $id,
+            'title' => 'Test Title',
+            'text' => 'Test Text',
+            'rating' => 5,
+        ]);
 
         // Настройка мока для метода getConnect
         $this->redisConnector->expects($this->once())
@@ -41,31 +46,69 @@ class ConnectorFacadeTest extends TestCase
             ->with('Значение = ' . $expectedValue);
 
         // Вызов метода
-        $result = $this->connectorFacade->getCard($id);
+        $result = $this->connectorFacade->getArticle($id);
 
         // Проверка результата
-        $this->assertEquals($expectedValue, $result);
+        $this->assertEquals([
+            'id' => $id,
+            'title' => 'Test Title',
+            'text' => 'Test Text',
+            'rating' => 5,
+        ], $result);
+    }
+
+    public function testGetArticleReturnsNullWhenValueIsNull()
+    {
+        $id = '123';
+
+        // Настройка мока для метода getConnect
+        $this->redisConnector->expects($this->once())
+            ->method('getConnect');
+
+        // Настройка мока для метода getValue, чтобы вернуть null
+        $this->redisConnector->expects($this->once())
+            ->method('getValue')
+            ->with($id)
+            ->willReturn(null);
+
+        // Настройка мока для метода info
+        $this->logger->expects($this->once())
+            ->method('info')
+            ->with('Значение = ' . null);
+
+        // Вызов метода
+        $result = $this->connectorFacade->getArticle($id);
+
+        // Проверка результата
+        $this->assertNull($result);
     }
 
     //TODO testSetCardLogsMessage
 
-//    public function testSetCardLogsMessage()
-//    {
-//        // Настройка мока для метода getConnect
-//        $this->redisConnector->expects($this->once())
-//            ->method('getConnect');
-//
-//        // Настройка мока для метода setCard
-//        $this->redisConnector->expects($this->once())
-//            ->method('setCard')
-//            ->with('123', []);
-//
-//        // Настройка мока для метода info
-//        $this->logger->expects($this->once())
-//            ->method('info')
-//            ->with('Запись добавлена ' . '123');
-//
-//        // Вызов метода
-//        $this->connectorFacade->setCard();
-//    }
+    public function testSetArticleLogsInfo()
+    {
+        $key = 'article:123';
+        $value = [
+            'title' => 'Test Title',
+            'text' => 'Test Text',
+            'rating' => 5,
+        ];
+
+        // Настройка мока для метода getConnect
+        $this->redisConnector->expects($this->once())
+            ->method('getConnect');
+
+        // Настройка мока для метода setCard
+        $this->redisConnector->expects($this->once())
+            ->method('setCard')
+            ->with($key, $value);
+
+        // Настройка мока для метода info
+        $this->logger->expects($this->once())
+            ->method('info')
+            ->with('Запись добавлена ' . $key);
+
+        // Вызов метода
+        $this->connectorFacade->setArticle($key, $value);
+    }
 }
