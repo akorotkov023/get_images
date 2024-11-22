@@ -29,18 +29,19 @@ final class MessageConsumer implements NamedConsumer
 
         $kafkaConsumer->subscribe([$this->topic]);
 
-        echo $this->name.' run command: while' . "\n";
+        echo "\n" . $this->name.' start while' . "\n";
 
         while (true) {
             $kafkaConsumer->start(
                 self::TIMEOUT_MS,
                 function (Message $message) use ($kafkaConsumer) : void {
-                    echo ' function :' . $message->payload . "\n";
-                    dd(($message->payload));
+//                    echo ' function :' . $message->payload . "\n";
+//                    dd(($message->payload));
                     $data = json_decode($message->payload, true, 512, JSON_THROW_ON_ERROR);
                     $this->messageManager->createMessage($this->name.' '.$data['text']);
-                    echo $this->name.' processed message: '.$data['text']."\n";
+                    echo $this->name.' Message saved: '.$data['text']."\n";
 
+                    //Сообщаем кафке о прочитанном сообщении
                     $kafkaConsumer->commit($message);
                 }
             );
