@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Service\Redis;
-use App\Entity\Article;
 use Predis\Client;
 use Predis\Connection\ConnectionException;
 
@@ -20,7 +19,7 @@ class Connector
      * @param string|null $password
      * @param int|null $dbIndex
      */
-    public function __construct(string $host = '127.0.0.1', int $port = 6379, ?string $password = null, ?int $dbIndex = null)
+    public function __construct(string $host = 'local-redis', int $port = 6379, ?string $password = null, ?int $dbIndex = null)
     {
         $this->host = $host;
         $this->port = $port;

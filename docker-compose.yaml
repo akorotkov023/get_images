@@ -70,6 +70,13 @@ services:
     depends_on:
       - "kafka"
 
+  redis:
+    image: redis:latest
+    container_name: local-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
 volumes:
   dump:
   postgresql:
