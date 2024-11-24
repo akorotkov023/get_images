@@ -27,13 +27,15 @@ class KafkaController
     }
 
     #[Route('/kafka/message', name: 'app_kafka_message')]
-    public function saveMessageAction(Request $request, MessageBusInterface $messageBus): JsonResponse
+    public function saveMessageAction(Request $request, KafkaService $kafkaService): JsonResponse
     {
         $text = $request->query->get('text');
         $count = $request->query->get('count');
+
+        $uniqueId = uniqid(' prefix_', true);
         for ($i = 0; $i < $count; $i++) {
-//            $messageBus->dispatch(new Message($text.' #'.$i));
-            $messageBus->dispatch(new TextMessage($text.' #'.$i));
+            $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => $text . $uniqueId . $i]);
+//            $messageBus->dispatch(new TextMessage($text.' #'.$i));
         }
 
         return new JsonResponse(['success' => true, 'count' => $count], Response::HTTP_OK);
@@ -42,8 +44,9 @@ class KafkaController
     #[Route('/kafka/test', name: 'app_kafka_test')]
     public function saveTest(KafkaService $kafkaService): JsonResponse
     {
-        $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => 'Test value']);
+        $uniqueId = uniqid('prefix_', true);
+        $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => 'Test value with ' . $uniqueId]);
 
-        return new JsonResponse(['success' => true], Response::HTTP_OK);
+        return new JsonResponse(['success' => true, 'Запись добавлена' => $uniqueId], Response::HTTP_OK);
     }
 }

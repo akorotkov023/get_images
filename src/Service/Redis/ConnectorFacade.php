@@ -26,9 +26,10 @@ class ConnectorFacade implements ConnectorFacadeInterface
         if (!isset($value)) {
             return null;
         }
+        //TODO переделать логику
         $res = json_decode($value);
         return [
-            'id' => $res->id,
+            'id' => $value,
             'title' => $res->title,
             'text' => $res->text,
             'rating' => $res->rating,
