@@ -32,7 +32,7 @@ class Connector
     {
         try {
             if ($this->isConnected) {
-                echo "Соединение было установлено ранее с Redis." . PHP_EOL;
+//                echo "Соединение было установлено ранее с Redis." . PHP_EOL;
                 return;
             }
             $this->isConnected = true;
@@ -44,7 +44,7 @@ class Connector
 //            $this->client->auth($this->password);
 //            $this->client->select($this->dbIndex);
             $this->client->connect();
-            echo "Successfully connected to Redis." . PHP_EOL;
+//            echo "Successfully connected to Redis." . PHP_EOL;
         } catch (ConnectionException $ex) {
             echo "Could not connect to Redis: " . $ex->getMessage() . "<br>";
         }
@@ -75,7 +75,7 @@ class Connector
         try {
             // Преобразуем массив в JSON
             $jsonData = json_encode($value);
-            $this->client->setex($key, 20, $jsonData);
+            $this->client->setex($key, 1000, $jsonData);
         } catch (ConnectionException $e) {
             echo $e->getMessage();
         }

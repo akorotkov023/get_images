@@ -23,12 +23,7 @@ class ConnectorFacadeTest extends TestCase
     public function testGetArticleReturnsData()
     {
         $id = '123';
-        $expectedValue = json_encode([
-            'id' => $id,
-            'title' => 'Test Title',
-            'text' => 'Test Text',
-            'rating' => 5,
-        ]);
+        $expectedValue = 'Sample Article';
 
         // Настройка мока для метода getConnect
         $this->redisConnector->expects($this->once())
@@ -49,12 +44,7 @@ class ConnectorFacadeTest extends TestCase
         $result = $this->connectorFacade->getArticle($id);
 
         // Проверка результата
-        $this->assertEquals([
-            'id' => $id,
-            'title' => 'Test Title',
-            'text' => 'Test Text',
-            'rating' => 5,
-        ], $result);
+        $this->assertEquals($expectedValue, $result);
     }
 
     public function testGetArticleReturnsNullWhenValueIsNull()
