@@ -2,16 +2,12 @@
 
 namespace App\Controller;
 
-use App\Dto\Message;
 use App\Manager\MessageManager;
-use App\Message\TextMessage;
 use App\Service\KafkaService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AsController]
@@ -34,7 +30,8 @@ class KafkaController
 
         $uniqueId = uniqid(' prefix_', true);
         for ($i = 0; $i < $count; $i++) {
-            $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => $text . $uniqueId . $i]);
+
+            $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => $text . $uniqueId . $i], ($i % 2 === 0) ? 0 : 1);
 //            $messageBus->dispatch(new TextMessage($text.' #'.$i));
         }
 

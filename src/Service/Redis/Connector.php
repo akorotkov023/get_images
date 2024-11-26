@@ -6,8 +6,8 @@ use Predis\Connection\ConnectionException;
 
 class Connector
 {
-    private string $host;
-    private int $port;
+    protected string $host;
+    protected int $port;
     private ?string $password;
     private ?int $dbIndex;
     private bool $isConnected;
@@ -19,7 +19,7 @@ class Connector
      * @param string|null $password
      * @param int|null $dbIndex
      */
-    public function __construct(string $host = 'local-redis', int $port = 6379, ?string $password = null, ?int $dbIndex = null)
+    public function __construct(string $host, int $port, ?string $password = null, ?int $dbIndex = null)
     {
         $this->host = $host;
         $this->port = $port;
@@ -32,7 +32,7 @@ class Connector
     {
         try {
             if ($this->isConnected) {
-                echo "Соединение было установлено ранее с Redis." . PHP_EOL;
+//                echo "Соединение было установлено ранее с Redis." . PHP_EOL;
                 return;
             }
             $this->isConnected = true;
@@ -44,7 +44,7 @@ class Connector
 //            $this->client->auth($this->password);
 //            $this->client->select($this->dbIndex);
             $this->client->connect();
-            echo "Successfully connected to Redis." . PHP_EOL;
+//            echo "Successfully connected to Redis." . PHP_EOL;
         } catch (ConnectionException $ex) {
             echo "Could not connect to Redis: " . $ex->getMessage() . "<br>";
         }
@@ -75,7 +75,7 @@ class Connector
         try {
             // Преобразуем массив в JSON
             $jsonData = json_encode($value);
-            $this->client->setex($key, 20, $jsonData);
+            $this->client->setex($key, 1000, $jsonData);
         } catch (ConnectionException $e) {
             echo $e->getMessage();
         }

@@ -35,8 +35,6 @@ final class MessageConsumer implements NamedConsumer
             $kafkaConsumer->start(
                 self::TIMEOUT_MS,
                 function (Message $message) use ($kafkaConsumer) : void {
-//                    echo ' function :' . $message->payload . "\n";
-//                    dd(($message->payload));
                     $data = json_decode($message->payload, true, 512, JSON_THROW_ON_ERROR);
                     $this->messageManager->createMessage($this->name.' '.$data['text']);
                     echo $this->name.' Message saved: '.$data['text']."\n";

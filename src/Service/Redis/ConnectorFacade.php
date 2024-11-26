@@ -18,7 +18,7 @@ class ConnectorFacade implements ConnectorFacadeInterface
         $this->redisConnector = $redisConnector;
     }
 
-    public function getArticle(string $id): ?array
+    public function getArticle(string $id): ?string
     {
         $this->redisConnector->getConnect();
         $value = $this->redisConnector->getValue($id);
@@ -26,14 +26,8 @@ class ConnectorFacade implements ConnectorFacadeInterface
         if (!isset($value)) {
             return null;
         }
-        //TODO переделать логику
-        $res = json_decode($value);
-        return [
-            'id' => $value,
-            'title' => $res->title,
-            'text' => $res->text,
-            'rating' => $res->rating,
-        ];
+
+        return $value;
     }
 
     public function setArticle(string $key, array $value): void

@@ -15,11 +15,19 @@ class RedisController extends AbstractController
     #[Route('/redis_check', name: 'app_redis_check')]
     public function check(ConnectorFacadeInterface $connectorFacade): JsonResponse
     {
-        $data = $connectorFacade->getArticle('key1');
+        $data = $connectorFacade->getArticle('1');
         if (!isset($data)) {
             return new JsonResponse(['error' => 'Article not found'], Response::HTTP_NOT_FOUND);
         }
-        return new JsonResponse($data);
+        $res = json_decode($data);
+        $cartArray = [
+            'id' => $res->id,
+            'title' => $res->title,
+            'text' => $res->text,
+            'rating' => $res->rating,
+        ];
+
+        return new JsonResponse($cartArray);
     }
 
     #[Route('/article/{id}', name: 'app_article')]
@@ -42,15 +50,23 @@ class RedisController extends AbstractController
             ];
 
             $connectorFacade->setArticle($key, $cartArray);
-            echo "Данные из базы." . PHP_EOL;
+//            echo "Данные из базы." . PHP_EOL;
             return new JsonResponse($cartArray);
         }
+        $res = json_decode($data);
+//        dd($res);
+        $cartArray = [
+            'id' => $res->id,
+            'title' => $res->title,
+            'text' => $res->text,
+            'rating' => $res->rating,
+        ];
 
-        return new JsonResponse($data);
+        return new JsonResponse($cartArray);
     }
 
     #[Route('/trending', name: 'app_trending')]
-    public function random(EntityManagerInterface $entityManager): JsonResponse
+    public function random(EntityManagerInterface $entityManager, ConnectorFacadeInterface $connectorFacade): JsonResponse
     {
         // Получаем все статьи
         $articles = $entityManager->getRepository(Article::class)->findAll();
@@ -60,13 +76,20 @@ class RedisController extends AbstractController
         }
         // Выбираем случайную статью
         $randomArticle = $articles[array_rand($articles)];
-        // Формируем данные для ответа
+
         $data = [
             'id' => $randomArticle->getId(),
             'title' => $randomArticle->getTitle(),
             'text' => $randomArticle->getText(),
             'rating' => $randomArticle->getRating(),
         ];
+
+        $findRedisArticle = $connectorFacade->getArticle($randomArticle->getId());
+        if (!isset($findRedisArticle)) {
+            $connectorFacade->setArticle($randomArticle->getId(), $data);
+        }
+        // Формируем данные для ответа
+
         return new JsonResponse($data);
     }
 }
