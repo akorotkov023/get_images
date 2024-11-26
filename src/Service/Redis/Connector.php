@@ -6,8 +6,8 @@ use Predis\Connection\ConnectionException;
 
 class Connector
 {
-    private string $host;
-    private int $port;
+    protected string $host;
+    protected int $port;
     private ?string $password;
     private ?int $dbIndex;
     private bool $isConnected;
@@ -19,7 +19,7 @@ class Connector
      * @param string|null $password
      * @param int|null $dbIndex
      */
-    public function __construct(string $host = 'local-redis', int $port = 6379, ?string $password = null, ?int $dbIndex = null)
+    public function __construct(string $host, int $port, ?string $password = null, ?int $dbIndex = null)
     {
         $this->host = $host;
         $this->port = $port;

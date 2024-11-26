@@ -30,7 +30,8 @@ class KafkaController
 
         $uniqueId = uniqid(' prefix_', true);
         for ($i = 0; $i < $count; $i++) {
-            $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => $text . $uniqueId . $i]);
+
+            $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => $text . $uniqueId . $i], ($i % 2 === 0) ? 0 : 1);
 //            $messageBus->dispatch(new TextMessage($text.' #'.$i));
         }
 

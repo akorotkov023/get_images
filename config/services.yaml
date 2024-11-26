@@ -18,14 +18,26 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/Consumer/'
             - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\Redis\Connector:
+        arguments:
+            $host: '%env(REDIS_HOST)%'
+            $port: '%env(REDIS_PORT)%'
 
-    App\Consumer\MessageConsumer:
+    App\Consumer\MessageConsumer 0:
+        class: App\Consumer\MessageConsumer
+        arguments:
+            $topic: !php/const App\Service\KafkaService::SEND_MESSAGE_TOPIC
+            $groupId: group0
+            $name: send_message0
+
+    App\Consumer\MessageConsumer 1:
         class: App\Consumer\MessageConsumer
         arguments:
             $topic: !php/const App\Service\KafkaService::SEND_MESSAGE_TOPIC
             $groupId: group1
-            $name: send_message
+            $name: send_message1
