@@ -66,4 +66,12 @@ $kafkaService->send(KafkaService::SEND_MESSAGE_TOPIC, ['text' => $text . $unique
 ```
 
 
+### Добавил RabbitMQ
+
+Заходим в контейнер 
+```bash 
+docker exec -it rabbitmq bash
+rabbitmq-plugins enable rabbitmq_management
+```
+web - http://127.0.0.1:15672/
 
