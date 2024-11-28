@@ -6,7 +6,7 @@ use App\Entity\MessageKafka;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
-readonly class MessageManager
+class MessageManager
 {
     public function __construct(
         private EntityManagerInterface $entityManager
